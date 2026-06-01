@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { posts } from '../../utils/posts';
+
+export function getStaticPaths() {
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+---
+
+<BaseLayout 
+  title={`${post.title} - MeuBlog`} 
+  description={post.excerpt} 
+  image={post.image}
+>
+  <article class="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+    <header class="mb-10 text-center">
+      <a href="/" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors mb-8">
+        <svg class="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Voltar para Home
+      </a>
+      
+      <div class="mb-4">
+        <span class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+          {post.category}
+        </span>
+      </div>
+      
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight mb-6 leading-tight">
+        {post.title}
+      </h1>
+      
+      <div class="flex items-center justify-center space-x-4 mt-8">
+        <img class="w-14 h-14 rounded-full object-cover shadow-sm" src={post.authorAvatar} alt={post.author} />
+        <div class="text-left">
+          <p class="text-base font-bold text-gray-900">{post.author}</p>
+          <div class="flex space-x-1 text-sm text-gray-500">
+            <time datetime={post.date}>{post.date}</time>
+            <span aria-hidden="true">&middot;</span>
+            <span>5 min de leitura</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="rounded-3xl overflow-hidden mb-12 shadow-2xl relative">
+      <img src={post.image} alt={post.title} class="w-full h-[400px] md:h-[500px] object-cover" />
+    </div>
+
+    <div class="prose prose-blue prose-lg md:prose-xl max-w-none text-gray-700">
+      <p class="lead text-xl md:text-2xl text-gray-600 mb-10 font-medium leading-relaxed">
+        {post.excerpt}
+      </p>
+      
+      <p>{post.content}</p>
+      
+      <h2>Por que isso é importante?</h2>
+      <p>No desenvolvimento moderno e na mentoria, manter-se focado e com o conhecimento alinhado com as demandas do mercado separa os amadores dos verdadeiros profissionais.</p>
+      
+      <ul>
+        <li>Redução drástica do tempo de aprendizado</li>
+        <li>Networking de alto valor com líderes da indústria</li>
+        <li>Feedback honesto para correção de rota rápida</li>
+      </ul>
+      
+      <blockquote>
+        "O sucesso não é um destino, mas uma jornada construída com orientação correta e persistência." - {post.author}
+      </blockquote>
+      
+      <p>Pronto para aplicar esses conceitos na sua jornada? Deixe seu comentário ou agende uma sessão com um de nossos mentores especialistas e impulsione sua carreira.</p>
+    </div>
+  </article>
+</BaseLayout>
