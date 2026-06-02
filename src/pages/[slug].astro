@@ -1,0 +1,240 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EmailInlineBanner from '../plugins/email-list/EmailInlineBanner.astro';
+import AffiliateProducts from '../plugins/affiliates/AffiliateProducts.astro';
+import PostSchemaPlugins from '../plugins/_slots/PostSchemaPlugins.astro';
+import PostBottomPlugins from '../plugins/_slots/PostBottomPlugins.astro';
+import PostAfterPlugins from '../plugins/_slots/PostAfterPlugins.astro';
+import SocialShare from '../plugins/social-share/SocialShare.astro';
+import PostCardStandard from '../components/home/PostCardStandard.astro';
+import { getCollection, render } from 'astro:content';
+import { readData } from '../lib/readData';
+import { postUrl } from '../lib/blogRoutes';
+const authorsData = readData('authors.json', []);
+
+const pluginsConfig = readData('pluginsConfig.json', {}) as any;
+const inlineConfig = pluginsConfig?.emailList?.inline;
+const inlineEnabled = inlineConfig?.enabled === true;
+const inlinePosition = Number(inlineConfig?.position ?? 3);
+
+const { slug } = Astro.params;
+const allPosts = await getCollection('blog');
+const post = allPosts.find((p) => p.id === slug);
+
+if (!post) {
+  return Astro.redirect('/blog');
+}
+const { Content } = await render(post);
+
+const currentAuthor = authorsData.find((a: any) => a.id === post.data.author) || authorsData[0] || {
+  name: post.data.author || 'Equipe',
+  role: 'Redação',
+  avatar: '',
+  bio: ''
+};
+
+const categorySlug = post.data.category ? post.data.category.toLowerCase().replace(/[^a-z0-9]/g, '-') : '';
+const siteConfig = readData('siteConfig.json', {}) as any;
+const fullPostUrl = `${siteConfig.url || Astro.url.origin}${postUrl(post.id)}`;
+
+// Related posts (random, exclude current)
+const otherPosts = allPosts.filter(p => p.id !== post.id);
+const relatedPosts = otherPosts.sort(() => Math.random() - 0.5).slice(0, 3);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} image={post.data.heroImage} type="article">
+  <PostSchemaPlugins
+    title={post.data.title}
+    description={post.data.description || ''}
+    url={fullPostUrl}
+    image={post.data.heroImage}
+    datePublished={post.data.pubDate instanceof Date ? post.data.pubDate.toISOString() : post.data.pubDate}
+    authorName={currentAuthor?.name}
+    category={post.data.category}
+  />
+
+  <article class="w-full bg-white">
+    <!-- Hero Header -->
+    <header class="max-w-4xl mx-auto px-4 pt-16 pb-12 text-center">
+      <!-- Breadcrumb -->
+      <nav class="text-sm font-medium text-slate-400 mb-8 flex justify-center items-center gap-2">
+        <a href="/" class="hover:text-primary transition-colors">Home</a>
+        {post.data.category && (
+          <>
+            <span class="text-slate-300">/</span>
+            <a href={`/categoria/${categorySlug}`} class="hover:text-primary transition-colors uppercase tracking-wider">{post.data.category}</a>
+          </>
+        )}
+      </nav>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-slate-800 leading-tight mb-8" style="font-family: var(--font-heading);">
+        {post.data.title}
+      </h1>
+
+      <div class="flex items-center justify-center gap-4 text-slate-500 font-medium">
+        {currentAuthor.avatar ? (
+          <img src={currentAuthor.avatar} alt={currentAuthor.name} class="w-12 h-12 rounded-full object-cover shadow-sm border-2 border-white" />
+        ) : (
+          <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-bold text-lg shadow-sm border-2 border-white">
+            {currentAuthor.name.charAt(0)}
+          </div>
+        )}
+        <div class="text-left leading-snug">
+          <p class="text-slate-800 font-bold">{currentAuthor.name}</p>
+          <time class="text-sm">{new Date(post.data.pubDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</time>
+        </div>
+      </div>
+    </header>
+
+    <!-- Featured image -->
+    {post.data.heroImage && (
+      <div class="max-w-6xl mx-auto px-4 mb-16">
+        <img src={post.data.heroImage} alt={post.data.title} class="w-full rounded-3xl object-cover shadow-xl aspect-[16/9] lg:h-[600px]" />
+      </div>
+    )}
+
+    <!-- Content -->
+    <div class="max-w-3xl mx-auto px-4 pb-16">
+      
+      <!-- Intro description -->
+      {post.data.description && (
+        <p class="text-xl md:text-2xl text-slate-600 font-medium leading-relaxed mb-12" style="font-family: var(--font-heading);">
+          {post.data.description}
+        </p>
+      )}
+
+      <div class="post-content text-lg md:text-xl">
+        <Content />
+      </div>
+
+      <!-- Email inline banner (injected by JS after nth paragraph) -->
+      {inlineEnabled && (
+        <div id="email-inline-source" data-position={inlinePosition} style="display:none">
+          <EmailInlineBanner />
+        </div>
+      )}
+
+      <!-- Affiliate products -->
+      <AffiliateProducts />
+
+      <!-- Post bottom: tags + social share -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-16 pt-8 border-t border-slate-100">
+        <div>
+          {post.data.category && (
+            <a href={`/categoria/${categorySlug}`} class="category-badge shadow-sm">#{post.data.category}</a>
+          )}
+        </div>
+        <PostBottomPlugins title={post.data.title} />
+      </div>
+
+      <!-- About author -->
+      <div class="bg-slate-50 rounded-3xl p-8 mt-12 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
+        {currentAuthor.avatar ? (
+          <img src={currentAuthor.avatar} alt={currentAuthor.name} class="w-24 h-24 rounded-full object-cover shadow-md flex-shrink-0" />
+        ) : (
+          <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center text-4xl font-bold text-slate-300 shadow-md flex-shrink-0">
+            {currentAuthor.name.charAt(0)}
+          </div>
+        )}
+        <div class="flex-1">
+          <h4 class="text-xl font-bold text-slate-800 mb-1" style="font-family: var(--font-heading);">{currentAuthor.name}</h4>
+          {currentAuthor.role && <p class="text-sm font-bold text-primary mb-3 uppercase tracking-wider">{currentAuthor.role}</p>}
+          {currentAuthor.bio && <p class="text-slate-600 leading-relaxed mb-4">{currentAuthor.bio}</p>}
+          <div class="flex justify-center sm:justify-start">
+            <SocialShare title={post.data.title} context="author-box" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Post after: related posts, comments, etc. -->
+      <div class="mt-12">
+        <PostAfterPlugins
+          currentSlug={post.id}
+          category={post.data.category || ''}
+        />
+      </div>
+
+      <!-- Comment form -->
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 mt-12">
+        <h3 class="text-2xl font-bold text-slate-800 mb-6" style="font-family: var(--font-heading);">Deixe um Comentário</h3>
+        <form id="comment-form" method="post" class="flex flex-col gap-5">
+          <textarea name="InputComment" rows="4" placeholder="O que você achou deste artigo?" required
+            class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-slate-700 resize-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"></textarea>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <input type="text" name="InputName" placeholder="Seu nome" required
+              class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-slate-700 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" />
+            <input type="email" name="InputEmail" placeholder="Seu e-mail" required
+              class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-slate-700 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" />
+          </div>
+          <div class="pt-2">
+            <button type="submit" class="btn-primary w-full sm:w-auto py-3 px-8 rounded-xl shadow-lg shadow-primary/30">Enviar Comentário</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </article>
+
+  <!-- Related Posts Section -->
+  {relatedPosts.length > 0 && (
+    <div class="bg-slate-50 py-12 border-t border-slate-100">
+      <div class="max-w-5xl mx-auto px-4">
+        <h2 class="text-2xl font-black text-slate-800 mb-8 text-center" style="font-family: var(--font-heading);">
+          Você também pode gostar
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {relatedPosts.map((relatedPost) => (
+             <article class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+              {relatedPost.data.heroImage && (
+                <a href={postUrl(relatedPost.id)} class="block aspect-video overflow-hidden">
+                  <img src={relatedPost.data.heroImage} alt={relatedPost.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </a>
+              )}
+              <div class="p-5">
+                {relatedPost.data.category && (
+                  <span class="text-[10px] font-bold text-primary uppercase tracking-wider mb-2 block">{relatedPost.data.category}</span>
+                )}
+                <h3 class="text-base font-bold text-slate-800 leading-snug mb-2 group-hover:text-primary transition-colors" style="font-family: var(--font-heading);">
+                  <a href={postUrl(relatedPost.id)}>{relatedPost.data.title}</a>
+                </h3>
+                <time class="text-xs font-medium text-slate-400">{new Date(relatedPost.data.pubDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}</time>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  )}
+
+  <script is:inline>
+  // Replace &nbsp; from Quill editor with normal spaces
+  (function() {
+    var postContent = document.querySelector('.post-content');
+    if (!postContent) return;
+    var walker = document.createTreeWalker(postContent, NodeFilter.SHOW_TEXT, null);
+    var node;
+    while ((node = walker.nextNode())) {
+      if (node.nodeValue && node.nodeValue.indexOf('\u00A0') !== -1) {
+        node.nodeValue = node.nodeValue.replace(/\u00A0/g, ' ');
+      }
+    }
+  })();
+  </script>
+
+  {inlineEnabled && (
+    <script>
+    (function() {
+      const source = document.getElementById('email-inline-source');
+      if (!source) return;
+      const pos = Number((source as HTMLElement).dataset.position) || 3;
+      const paragraphs = document.querySelectorAll('.post-content > p');
+      const target = paragraphs[pos - 1] || paragraphs[paragraphs.length - 1];
+      if (target) {
+        target.insertAdjacentElement('afterend', source);
+        source.style.display = 'block';
+      }
+    })();
+    </script>
+  )}
+
+</BaseLayout>

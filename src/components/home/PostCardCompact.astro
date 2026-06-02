@@ -1,0 +1,46 @@
+---
+import { postUrl } from '../../lib/blogRoutes';
+
+export interface Props {
+    post: any;
+    number?: number;
+}
+
+const { post, number } = Astro.props;
+
+function formatDate(date: Date) {
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+---
+
+<article class="group flex gap-4 items-center">
+    {number && (
+        <div class="text-4xl font-black text-slate-200 w-8 text-center flex-shrink-0" style="font-family: var(--font-heading);">
+            {number}
+        </div>
+    )}
+    {!number && post.data.heroImage && (
+        <a href={postUrl(post.id)} class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden relative shadow-sm">
+            <img 
+                src={post.data.heroImage} 
+                alt={post.data.title} 
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+        </a>
+    )}
+    <div class="flex-1 min-w-0">
+        {post.data.category && (
+            <div class="mb-1">
+                <a href={`/categoria/${post.data.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`} class="text-xs font-bold text-primary hover:underline uppercase tracking-wider">
+                    {post.data.category}
+                </a>
+            </div>
+        )}
+        <h3 class="text-base font-bold text-slate-800 leading-tight group-hover:text-primary transition-colors line-clamp-2" style="font-family: var(--font-heading);">
+            <a href={postUrl(post.id)}>{post.data.title}</a>
+        </h3>
+        <p class="mt-1 text-xs font-medium text-slate-400">
+            {formatDate(post.data.pubDate)}
+        </p>
+    </div>
+</article>

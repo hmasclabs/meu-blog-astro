@@ -1,21 +1,64 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import HeadPlugins from '../plugins/_slots/HeadPlugins.astro';
+import BodyEndPlugins from '../plugins/_slots/BodyEndPlugins.astro';
+import { readData } from '../lib/readData';
 import '../styles/global.css';
 
+const siteConfig = readData('siteConfig.json', {
+  name: 'Meu Blog',
+  description: 'Um blog incrível',
+  url: '',
+  theme: { primary: '#3B82F6', accent: '#6366F1', font: 'poppins', dark: '#1E293B' },
+}) as any;
+
+const pluginsConfig = readData('pluginsConfig.json', {}) as any;
+const gscVerificationTag = pluginsConfig?.searchConsole?.verificationTag?.trim() || '';
+
+// Font mapping
+const fontMap: Record<string, { heading: string; body: string; url: string }> = {
+  inter:      { heading: 'Inter',            body: 'Roboto Mono',   url: 'family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500' },
+  outfit:     { heading: 'Outfit',           body: 'Inter',         url: 'family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500' },
+  roboto:     { heading: 'Roboto',           body: 'Open Sans',     url: 'family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600' },
+  poppins:    { heading: 'Poppins',          body: 'Roboto',        url: 'family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500' },
+  montserrat: { heading: 'Montserrat',       body: 'Merriweather',  url: 'family=Montserrat:wght@400;500;600;700&family=Merriweather:wght@400;700' },
+  playfair:   { heading: 'Playfair Display', body: 'Source Sans 3', url: 'family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@400;600' },
+  lora:       { heading: 'Lora',             body: 'Merriweather',  url: 'family=Lora:wght@400;500;600;700&family=Merriweather:wght@400;700' },
+};
+const selectedFont = fontMap[siteConfig.theme?.font || 'poppins'] || fontMap.poppins;
+const primaryHex = siteConfig.theme?.primary || '#3B82F6';
+const accentHex  = siteConfig.theme?.accent  || '#6366F1';
+const darkHex    = siteConfig.theme?.dark    || '#1E293B';
+
+// Convert hex to RGB triplet for CSS custom properties
+function hexToRgb(hex: string): string {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `${r} ${g} ${b}`;
+}
+
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
   image?: string;
   canonicalURL?: string | URL;
+  type?: 'website' | 'article';
 }
 
 const {
-  title,
-  description = "Um blog incrível construído com Astro e Tailwind CSS",
-  image = "/default-og.png",
-  canonicalURL = new URL(Astro.url.pathname, Astro.site || Astro.url.origin)
+  title = siteConfig.name,
+  description = siteConfig.description,
+  image = '',
+  canonicalURL = new URL(Astro.url.pathname, siteConfig.url || Astro.url.origin),
+  type = 'website',
 } = Astro.props;
+
+const formattedTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+const siteUrl = siteConfig.url || Astro.url.origin;
+const socialImage = image?.startsWith('http') ? image : image ? new URL(image, siteUrl).toString() : '';
 ---
 
 <!doctype html>
@@ -23,33 +66,72 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
+    <title>{formattedTitle}</title>
     <meta name="description" content={description} />
-    
+
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={title} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={formattedTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, Astro.url)} />
+    {socialImage && <meta property="og:image" content={socialImage} />}
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={Astro.url} />
+    <meta name="twitter:title" content={formattedTitle} />
+    <meta name="twitter:description" content={description} />
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
+
+    <!-- Google Search Console verification -->
+    {gscVerificationTag && (
+      gscVerificationTag.startsWith('<')
+        ? <Fragment set:html={gscVerificationTag} />
+        : <meta name="google-site-verification" content={gscVerificationTag} />
+    )}
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Google Fonts (dynamic from CMS config) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${selectedFont.url}&display=swap`} />
+
+    <!-- FontAwesome for Social Share icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Dynamic theme colors from CMS -->
+    <style define:vars={{
+      primaryRgb: hexToRgb(primaryHex),
+      accentRgb: hexToRgb(accentHex),
+      darkRgb: hexToRgb(darkHex),
+      fontHeading: `"${selectedFont.heading}", sans-serif`,
+      fontBody: `"${selectedFont.body}", sans-serif`,
+    }}>
+      :root {
+        --color-primary: var(--primaryRgb);
+        --color-accent: var(--accentRgb);
+        --color-primary-dark: var(--darkRgb);
+        --font-heading: var(--fontHeading);
+        --font-body: var(--fontBody);
+      }
+    </style>
+
+    <!-- Head plugins: GA4, Meta Pixel, AdSense -->
+    <HeadPlugins />
   </head>
-  <body class="flex flex-col min-h-screen bg-gray-50 text-gray-900 font-sans selection:bg-blue-200 selection:text-blue-900">
+  <body class="flex flex-col min-h-screen bg-gray-50 text-gray-900 selection:bg-blue-200 selection:text-blue-900"
+        style={`font-family: var(--font-body);`}>
     <Header />
     <main class="flex-grow">
       <slot />
     </main>
     <Footer />
+
+    <!-- Body-end plugins: EmailPopup, CookieConsent -->
+    <BodyEndPlugins />
   </body>
 </html>

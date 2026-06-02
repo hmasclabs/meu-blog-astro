@@ -1,0 +1,37 @@
+{
+  "name": "Nova Renda",
+  "description": "Um blog criado com cms-core — substitua este texto pela descrição do seu site.",
+  "url": "https://meublog.com.br",
+  "author": "Autor",
+  "language": "pt-BR",
+  "logo": "",
+  "theme": {
+    "primary": "#7C3AED",
+    "accent": "#A78BFA",
+    "font": "poppins",
+    "dark": "#2D1060"
+  },
+  "social": {
+    "instagram": "",
+    "twitter": "",
+    "facebook": "",
+    "pinterest": "",
+    "youtube": ""
+  },
+  "contact": {
+    "email": "",
+    "phone": "",
+    "address": "",
+    "name": ""
+  },
+  "legal": {
+    "terms_last_updated": "",
+    "privacy_last_updated": ""
+  },
+  "phone": "",
+  "address": "",
+  "footer": {
+    "description": "Escola de Negócios e Líderes focada em duplicação, mentalidade empreendedora e marketing de rede profissional.",
+    "copyright": "Nova Renda"
+  }
+}

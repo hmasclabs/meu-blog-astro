@@ -1,0 +1,82 @@
+---
+import { postUrl } from '../../lib/blogRoutes';
+
+export interface Props {
+    mainPost: any;
+    sidePosts: any[];
+}
+
+const { mainPost, sidePosts } = Astro.props;
+
+function formatDate(date: Date) {
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+---
+
+{mainPost && (
+<section class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl md:text-3xl font-black text-slate-800" style="font-family: var(--font-heading);">Escolha do Editor</h2>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Main Featured Post -->
+        <div class="lg:col-span-8 group relative rounded-3xl overflow-hidden shadow-lg aspect-[4/3] md:aspect-[16/9] lg:aspect-auto lg:h-[500px]">
+            <a href={postUrl(mainPost.id)} class="block w-full h-full">
+                <img 
+                    src={mainPost.data.heroImage || '/placeholder-hero.jpg'} 
+                    alt={mainPost.data.title} 
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 text-white">
+                    {mainPost.data.category && (
+                        <span class="inline-block px-4 py-1.5 mb-4 text-xs font-bold bg-primary text-white uppercase tracking-wider rounded-full">
+                            {mainPost.data.category}
+                        </span>
+                    )}
+                    <h3 class="text-3xl md:text-4xl font-bold leading-tight mb-4" style="font-family: var(--font-heading);">
+                        {mainPost.data.title}
+                    </h3>
+                    <div class="flex items-center gap-4 text-sm font-medium text-slate-300">
+                        {mainPost.data.author && (
+                            <div class="flex items-center gap-2">
+                                <span class="text-white">{mainPost.data.author}</span>
+                            </div>
+                        )}
+                        <span>&bull;</span>
+                        <time>{formatDate(mainPost.data.pubDate)}</time>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Side Posts -->
+        <div class="lg:col-span-4 flex flex-col gap-6">
+            {sidePosts.map((post) => (
+                <article class="group relative rounded-2xl overflow-hidden shadow-md flex-1 min-h-[140px]">
+                    <a href={postUrl(post.id)} class="block w-full h-full">
+                        <img 
+                            src={post.data.heroImage || '/placeholder-hero.jpg'} 
+                            alt={post.data.title} 
+                            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-slate-900/10"></div>
+                        <div class="absolute bottom-0 left-0 w-full p-5 text-white">
+                            {post.data.category && (
+                                <span class="text-xs font-bold text-primary uppercase tracking-wider mb-2 block">
+                                    {post.data.category}
+                                </span>
+                            )}
+                            <h3 class="text-lg font-bold leading-tight line-clamp-2" style="font-family: var(--font-heading);">
+                                {post.data.title}
+                            </h3>
+                            <time class="text-xs text-slate-300 mt-2 block">{formatDate(post.data.pubDate)}</time>
+                        </div>
+                    </a>
+                </article>
+            ))}
+        </div>
+    </div>
+</section>
+)}

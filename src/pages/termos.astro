@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readData } from '../lib/readData';
+
+const siteConfig = readData('siteConfig.json', { name: 'Meu Blog', url: '' }) as any;
+const name = siteConfig.name;
+---
+
+<BaseLayout title={`Termos de Uso | ${name}`} description={`Termos de Uso do site ${name}`}>
+  <article class="max-w-4xl mx-auto px-4 py-16">
+    <header class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-4" style="font-family: var(--font-heading);">Termos de Uso</h1>
+      <p class="text-lg text-slate-500 font-medium">Última atualização: {new Date().toLocaleDateString('pt-BR')}</p>
+    </header>
+
+    <div class="prose prose-lg prose-slate max-w-none text-slate-700 leading-relaxed">
+      <h3>1. Termos</h3>
+      <p>Ao acessar ao site <strong>{name}</strong>, concorda em cumprir estes termos de serviço, todas as leis e regulamentos aplicáveis e concorda que é responsável pelo cumprimento de todas as leis locais aplicáveis. Se você não concordar com algum desses termos, está proibido de usar ou acessar este site.</p>
+
+      <h3>2. Uso de Licença</h3>
+      <p>É concedida permissão para baixar temporariamente uma cópia dos materiais (informações ou software) no site <strong>{name}</strong>, apenas para visualização transitória pessoal e não comercial. Esta é a concessão de uma licença, não uma transferência de título e, sob esta licença, você não pode:</p>
+      <ul>
+        <li>Modificar ou copiar os materiais;</li>
+        <li>Usar os materiais para qualquer finalidade comercial ou para exibição pública;</li>
+        <li>Tentar descompilar ou fazer engenharia reversa de qualquer software contido no site;</li>
+        <li>Remover quaisquer direitos autorais ou outras notações de propriedade dos materiais;</li>
+      </ul>
+
+      <h3>3. Isenção de responsabilidade</h3>
+      <p>Os materiais no site da <strong>{name}</strong> são fornecidos 'como estão'. <strong>{name}</strong> não oferece garantias, expressas ou implícitas, e, por este meio, isenta e nega todas as outras garantias, incluindo, sem limitação, garantias implícitas ou condições de comercialização, adequação a um fim específico ou não violação de propriedade intelectual ou outra violação de direitos.</p>
+      <p>Além disso, o <strong>{name}</strong> não garante ou faz qualquer representação relativa à precisão, aos resultados prováveis ou à confiabilidade do uso dos materiais em seu site ou de outra forma relacionado a esses materiais ou em sites vinculados a este site.</p>
+
+      <h3>4. Limitações</h3>
+      <p>Em nenhum caso o <strong>{name}</strong> ou seus fornecedores serão responsáveis por quaisquer danos (incluindo, sem limitação, danos por perda de dados ou lucro ou devido a interrupção dos negócios) decorrentes do uso ou da incapacidade de usar os materiais em <strong>{name}</strong>.</p>
+
+      <h3>5. Modificações</h3>
+      <p>O <strong>{name}</strong> pode revisar estes termos de serviço do site a qualquer momento, sem aviso prévio. Ao usar este site, você concorda em ficar vinculado à versão atual desses termos de serviço.</p>
+    </div>
+  </article>
+</BaseLayout>

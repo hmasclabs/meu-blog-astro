@@ -38,11 +38,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <!-- Right Side - Form -->
         <div class="p-10 md:w-3/5 bg-white">
-          <form action="#" method="POST" class="space-y-6">
+          <form id="whatsapp-contact-form" class="space-y-6">
             <div>
               <label for="name" class="block text-sm font-medium text-gray-700">Nome Completo</label>
               <div class="mt-1">
-                <input type="text" name="name" id="name" class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-lg text-gray-900 border" placeholder="João da Silva">
+                <input type="text" name="name" id="name" required class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-lg text-gray-900 border" placeholder="João da Silva">
               </div>
             </div>
             
@@ -56,16 +56,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div>
               <label for="message" class="block text-sm font-medium text-gray-700">Mensagem</label>
               <div class="mt-1">
-                <textarea id="message" name="message" rows="4" class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-lg text-gray-900 border" placeholder="Como podemos ajudar?"></textarea>
+                <textarea id="message" name="message" rows="4" required class="py-3 px-4 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-lg text-gray-900 border" placeholder="Como podemos ajudar?"></textarea>
               </div>
             </div>
 
             <div>
               <button type="submit" class="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                Enviar Mensagem
+                Enviar Mensagem no WhatsApp
               </button>
             </div>
           </form>
+
+          <script is:inline>
+            document.getElementById('whatsapp-contact-form')?.addEventListener('submit', function(e) {
+              e.preventDefault();
+              const name = document.getElementById('name').value;
+              const email = document.getElementById('email').value;
+              const message = document.getElementById('message').value;
+              
+              let text = `Olá! Meu nome é *${name}*.\n`;
+              if (email) text += `Meu e-mail de contato é: ${email}\n\n`;
+              text += `*Mensagem:*\n${message}`;
+              
+              const encodedText = encodeURIComponent(text);
+              const whatsappUrl = `https://wa.me/5591981992265?text=${encodedText}`;
+              
+              window.open(whatsappUrl, '_blank');
+            });
+          </script>
         </div>
 
       </div>

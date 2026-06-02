@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readData } from '../lib/readData';
+
+const siteConfig = readData('siteConfig.json', { name: 'Meu Blog', url: '' }) as any;
+const name = siteConfig.name;
+const url = siteConfig.url || Astro.url.origin;
+---
+
+<BaseLayout title={`Política de Privacidade | ${name}`} description={`Política de Privacidade e Proteção de Dados do site ${name}`}>
+  <article class="max-w-4xl mx-auto px-4 py-16">
+    <header class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-4" style="font-family: var(--font-heading);">Política de Privacidade</h1>
+      <p class="text-lg text-slate-500 font-medium">Última atualização: {new Date().toLocaleDateString('pt-BR')}</p>
+    </header>
+
+    <div class="prose prose-lg prose-slate max-w-none text-slate-700 leading-relaxed">
+      <p>Nós do <strong>{name}</strong> respeitamos a sua privacidade e garantimos o sigilo total das informações que você nos fornece, em total conformidade com a <strong>Lei Geral de Proteção de Dados (LGPD - Lei 13.709/2018)</strong>.</p>
+      
+      <h3>1. Coleta de Dados Pessoais</h3>
+      <p>Nosso site pode coletar informações de identificação pessoal de diversas formas, incluindo, mas não limitando a, quando os usuários visitam nosso site, se inscrevem na newsletter, preenchem um formulário ou interagem com nossas publicidades e campanhas de funil de recrutamento. As informações solicitadas podem incluir: nome, e-mail e número de telefone/WhatsApp.</p>
+
+      <h3>2. Como usamos os Cookies</h3>
+      <p>Cookies são pequenos arquivos de texto baixados automaticamente no seu dispositivo. Utilizamos cookies e tecnologias semelhantes de rastreamento (como o Pixel do Facebook ou a Tag do Google Analytics) para:</p>
+      <ul>
+        <li>Garantir o funcionamento correto da plataforma.</li>
+        <li>Entender como você interage com o nosso site.</li>
+        <li>Otimizar a performance de campanhas de marketing (redirecionamento de anúncios e métricas de funil).</li>
+      </ul>
+      <p>Você pode optar por desativar os cookies nas configurações do seu navegador, no entanto, isso pode afetar a disponibilidade de algumas ferramentas do site.</p>
+
+      <h3>3. Como Usamos as suas Informações</h3>
+      <p>As informações coletadas são usadas exclusivamente para:</p>
+      <ul>
+        <li>Enviar comunicações sobre a nossa oportunidade de negócios e mentoria (quando solicitado via WhatsApp ou formulário).</li>
+        <li>Melhorar nosso funil de recrutamento baseado na experiência do usuário.</li>
+        <li>Enviar periodicamente e-mails promocionais sobre novos conteúdos e parcerias, caso você tenha optado por receber nossa newsletter.</li>
+      </ul>
+
+      <h3>4. Compartilhamento de Informações</h3>
+      <p>O <strong>{name}</strong> NÃO vende, aluga ou transfere para terceiros os seus dados. Entretanto, essas informações podem ser agrupadas e utilizadas internamente para estatísticas genéricas.</p>
+
+      <h3>5. Direitos do Titular dos Dados (Seus Direitos)</h3>
+      <p>De acordo com a LGPD, você tem o direito de solicitar a qualquer momento:</p>
+      <ul>
+        <li>Acesso aos dados pessoais que possuímos sobre você.</li>
+        <li>A correção de dados incompletos, inexatos ou desatualizados.</li>
+        <li>A anonimização, bloqueio ou eliminação de dados desnecessários ou excessivos.</li>
+        <li>A revogação do consentimento (como o cancelamento do recebimento de e-mails - <em>opt-out</em>).</li>
+      </ul>
+
+      <h3>6. Contato</h3>
+      <p>Se você tiver alguma dúvida sobre esta Política de Privacidade ou sobre nossas práticas, entre em contato conosco através da nossa página de <a href="/contato" class="text-primary hover:underline">Contato</a>.</p>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@source "../pages/admin";
+@source "../components/admin";
+@source "../layouts";
