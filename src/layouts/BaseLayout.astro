@@ -92,7 +92,11 @@ const socialImage = image?.startsWith('http') ? image : image ? new URL(image, s
         : <meta name="google-site-verification" content={gscVerificationTag} />
     )}
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {siteConfig.favicon ? (
+      <link rel="icon" href={siteConfig.favicon} />
+    ) : (
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    )}
     <meta name="generator" content={Astro.generator} />
 
     <!-- Google Fonts (dynamic from CMS config) -->
