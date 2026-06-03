@@ -31,7 +31,7 @@ const DEFAULT: HomeConfig = {
     hero: {
         title: 'Construa uma <span style="color: rgb(var(--color-primary));">Nova Renda</span> no Piloto Automático.',
         subtitle: 'Descubra o sistema exato para atrair parceiros e escalar o seu negócio usando um funil de recrutamento 100% automático e duplicável.',
-        image: '/profile.png',
+        image: '/images/hugo-murilo.avif',
         buttonText: 'Quero Começar Agora',
         buttonLink: 'https://wa.me/5591981992265'
     },
@@ -275,10 +275,10 @@ export default function HomeEditor() {
                             type="text"
                             value={config.hero.image}
                             onChange={e => setHero('image', e.target.value)}
-                            placeholder="/profile.png"
+                            placeholder="/images/hugo-murilo.avif"
                             className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400 transition-all"
                         />
-                        <p className="text-[11px] text-slate-400 mt-1">Exemplo: /profile.png (deve estar na pasta public do seu projeto)</p>
+                        <p className="text-[11px] text-slate-400 mt-1">Exemplo: /images/hugo-murilo.avif (deve estar na pasta public do seu projeto)</p>
                     </div>
 
                     <div>

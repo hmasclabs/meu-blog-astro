@@ -2,7 +2,7 @@
     "hero": {
         "title": "O Caminho Profissional para sua <span style=\"color: rgb(var(--color-primary));\">Nova Renda.</span>",
         "subtitle": "Use o nosso sistema inteligente e duplicável para atrair parceiros qualificados. Entregamos a estrutura gratuitamente para quem se ativa em nossa equipe.",
-        "image": "/profile.png",
+        "image": "/images/hugo-murilo.avif",
         "buttonText": "Quero Ser Mentorado",
         "buttonLink": "https://wa.me/5591981992265"
     },
