@@ -96,18 +96,31 @@ export default function ContatoEditor() {
                 <div className={cardClass}>
                     <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
                         <h3 className="text-lg font-bold text-slate-900">2. Textos do Bloco de Informações</h3>
-                        <span className="text-[10px] bg-slate-100 text-slate-800 font-bold px-2 py-1 rounded">Contatos reais editados em Configurações</span>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="md:col-span-2"><label className={labelClass}>Título do Box de Informações</label><input type="text" value={contato?.cards?.napTitle || ''} onChange={e => updateField('cards', 'napTitle', e.target.value)} className={inputClass} /></div>
                         {[
-                            { key: 'addressLabel', label: 'Aviso de Endereço' },
-                            { key: 'phoneLabel', label: 'Aviso de Telefone' },
-                            { key: 'emailLabel', label: 'Aviso de E-mail' },
+                            { key: 'addressLabel', label: 'Aviso de Endereço (Opcional)' },
+                            { key: 'phoneLabel', label: 'Aviso de Telefone (Opcional)' },
+                            { key: 'emailLabel', label: 'Aviso de E-mail (Opcional)' },
                             { key: 'formSubmitText', label: 'Texto do Botão de Envio' },
                         ].map(f => (
                             <div key={f.key}><label className={labelClass}>{f.label}</label><input type="text" value={contato?.cards?.[f.key] || ''} onChange={e => updateField('cards', f.key, e.target.value)} className={inputClass} /></div>
                         ))}
+                    </div>
+                </div>
+
+                <div className={cardClass}>
+                    <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+                        <h3 className="text-lg font-bold text-slate-900">3. Dados de Contato Reais</h3>
+                        <span className="text-[10px] bg-slate-100 text-slate-800 font-bold px-2 py-1 rounded">Exibidos na página de contato</span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label className={labelClass}>E-mail</label><input type="email" value={contato?.info?.email || ''} onChange={e => updateField('info', 'email', e.target.value)} className={inputClass} placeholder="contato@meublog.com" /></div>
+                        <div><label className={labelClass}>Telefone Fixo / Celular</label><input type="text" value={contato?.info?.phone || ''} onChange={e => updateField('info', 'phone', e.target.value)} className={inputClass} placeholder="+55 (11) 99999-9999" /></div>
+                        <div className="md:col-span-2"><label className={labelClass}>Endereço Físico</label><input type="text" value={contato?.info?.address || ''} onChange={e => updateField('info', 'address', e.target.value)} className={inputClass} placeholder="São Paulo, SP - Brasil" /></div>
+                        <div className="md:col-span-2"><label className={labelClass}>Número do WhatsApp (Apenas Números)</label><input type="text" value={contato?.info?.whatsapp || ''} onChange={e => updateField('info', 'whatsapp', e.target.value)} className={inputClass} placeholder="5511999999999" />
+                        <p className="text-xs text-slate-400 mt-1">Este número será usado no botão do formulário de contato.</p></div>
                     </div>
                 </div>
 

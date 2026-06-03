@@ -6,6 +6,7 @@ const contatoData = readData('contato.json', {
     seo: { title: "Contato", description: "Entre em contato conosco.", image: "" },
     hero: { title: "Fale Conosco", subtitle: "Tem alguma dúvida sobre mentoria ou quer dar um feedback sobre o blog? Preencha o formulário e nossa equipe retornará em breve." },
     cards: { napTitle: "Contatos", addressLabel: "Endereço", phoneLabel: "Telefone", emailLabel: "E-mail", formSubmitText: "Enviar Mensagem no WhatsApp" },
+    info: { email: "", phone: "", address: "", whatsapp: "" },
     googleMapsUrl: ""
 });
 
@@ -13,10 +14,10 @@ const siteConfig = readData('siteConfig.json', {
     contact: { email: "contato@meublog.com", phone: "+55 (11) 99999-9999", address: "São Paulo, SP - Brasil", whatsapp: "5591981992265" }
 });
 
-const email = siteConfig.contact?.email || "contato@meublog.com";
-const phone = siteConfig.contact?.phone || siteConfig.phone || "+55 (11) 99999-9999";
-const address = siteConfig.contact?.address || siteConfig.address || "São Paulo, SP - Brasil";
-const whatsapp = siteConfig.contact?.whatsapp || "5591981992265";
+const email = contatoData.info?.email || siteConfig.contact?.email || "contato@meublog.com";
+const phone = contatoData.info?.phone || siteConfig.contact?.phone || siteConfig.phone || "+55 (11) 99999-9999";
+const address = contatoData.info?.address || siteConfig.contact?.address || siteConfig.address || "São Paulo, SP - Brasil";
+const whatsapp = contatoData.info?.whatsapp || siteConfig.contact?.whatsapp || "5591981992265";
 ---
 
 <BaseLayout 
