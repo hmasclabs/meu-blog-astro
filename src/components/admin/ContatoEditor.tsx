@@ -147,6 +147,13 @@ export default function ContatoEditor() {
                         </div>
                     </div>
                 </div>
+
+                <div className="pt-6 flex justify-end">
+                    <button type="submit" disabled={saving} className="bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white px-8 py-3 rounded-xl text-base font-bold flex items-center gap-2 transition-all shadow-md shadow-violet-600/20">
+                        {saving && <Loader2 className="w-5 h-5 animate-spin" />}
+                        {saving ? 'Salvando...' : 'Salvar Alterações'}
+                    </button>
+                </div>
             </form>
         </div>
     );
