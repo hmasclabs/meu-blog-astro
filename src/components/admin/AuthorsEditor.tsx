@@ -46,23 +46,51 @@ export default function AuthorsEditor() {
         }
     };
 
+    const fileToBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve((reader.result as string).split(',')[1]);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+    });
+
+    const [pendingUpload, setPendingUpload] = useState<File | null>(null);
+
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onloadend = () => setTempAuthor({ ...tempAuthor, avatar: reader.result as string });
-        reader.readAsDataURL(file);
+        setPendingUpload(file);
+        setTempAuthor({ ...tempAuthor, avatar: URL.createObjectURL(file) });
+        e.target.value = '';
     };
 
     const saveModalAuthor = async () => {
         if (!tempAuthor?.name?.trim()) { alert('O nome do autor é obrigatório!'); return; }
+        
+        let finalAvatar = tempAuthor.avatar;
+        if (pendingUpload) {
+            setSaving(true);
+            try {
+                const base64Content = await fileToBase64(pendingUpload);
+                const fileExt = pendingUpload.name.split('.').pop() || 'png';
+                const ghPath = `public/uploads/${Date.now()}-avatar.${fileExt}`;
+                await githubApi('write', ghPath, { content: base64Content, isBase64: true, message: `Upload avatar ${ghPath}` });
+                finalAvatar = ghPath.replace('public', '');
+            } catch (err: any) {
+                alert('Erro no upload da imagem: ' + err.message);
+                setSaving(false);
+                return;
+            }
+        }
+
         const arr = [...authors];
-        if (editingIndex === null) arr.unshift(tempAuthor);
-        else arr[editingIndex] = tempAuthor;
+        const newAuthor = { ...tempAuthor, avatar: finalAvatar };
+        if (editingIndex === null) arr.unshift(newAuthor);
+        else arr[editingIndex] = newAuthor;
         setAuthors(arr);
         setIsModalOpen(false);
         setTempAuthor(null);
         setEditingIndex(null);
+        setPendingUpload(null);
         await saveToGithub(arr);
     };
 
