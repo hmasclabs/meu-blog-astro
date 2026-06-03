@@ -28,10 +28,11 @@ function setCache(key: string, data: any) {
 }
 
 function invalidateCache(path: string) {
-    // Invalida o arquivo e o diretório pai
-    readCache.delete(path);
+    // Invalida o arquivo (read e list) e o diretório pai
+    readCache.delete(`read:${path}`);
+    readCache.delete(`list:${path}`);
     const dir = path.split('/').slice(0, -1).join('/');
-    readCache.delete(dir);
+    readCache.delete(`list:${dir}`);
 }
 
 /** Modo dev: lê/escreve arquivos locais sem precisar do GitHub */
