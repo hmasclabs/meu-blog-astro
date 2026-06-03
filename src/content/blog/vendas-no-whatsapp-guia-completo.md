@@ -2,7 +2,7 @@
 title: "Vendas no WhatsApp: Guia Completo para Organizar, Planejar e Impulsionar Resultados"
 description: "Guia completo para você começar a fazer as suas vendas no whatsapp e impulsinar o faturamento do seu negócio"
 pubDate: "2026-06-03"
-heroImage: "/uploads/1780508174958-blog-cover.jpeg"
+heroImage: "blob:https://novarenda.vercel.app/19a1a758-002d-406f-abb5-d657e748a8a5"
 category: "Vendas"
 author: "Hugo Murilo"
 draft: false
