@@ -1,18 +1,24 @@
 {
-    "seo": {
-        "title": "Contato",
-        "description": "Entre em contato conosco.",
-        "image": ""
-    },
-    "hero": {
-        "title": "Contato",
-        "subtitle": "Tem alguma dúvida, sugestão ou quer fazer uma parceria? Entre em contato."
-    },
-    "cards": {
-        "napTitle": "Contatos",
-        "addressLabel": "Endereço",
-        "phoneLabel": "Telefone",
-        "emailLabel": "E-mail",
-        "formSubmitText": "Enviar Mensagem"
-    }
+  "seo": {
+    "title": "Contato",
+    "description": "Entre em contato conosco.",
+    "image": ""
+  },
+  "hero": {
+    "title": "Contato",
+    "subtitle": "Tem alguma dúvida, sugestão ou quer fazer uma parceria? Entre em contato."
+  },
+  "cards": {
+    "napTitle": "Contatos",
+    "addressLabel": "Endereço",
+    "phoneLabel": "Telefone",
+    "emailLabel": "E-mail",
+    "formSubmitText": "Enviar Mensagem"
+  },
+  "info": {
+    "email": "hugomurilosc@gmail.com",
+    "phone": "+55 (91) 98199-2265",
+    "address": "Marituba - PA",
+    "whatsapp": "5591981992265"
+  }
 }
